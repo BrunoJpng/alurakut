@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { Box } from '../src/components/Box';
 import { MainGrid } from '../src/components/MainGrid';
@@ -24,6 +24,28 @@ function ProfileSidebar(props) {
   );
 }
 
+function ProfileRelationsBox(props) {
+  return (
+    <ProfileRelationsBoxWrapper>
+      <h2 className="smallTitle">
+        {props.title} ({props.items.length})
+      </h2>
+      <ul>
+        {/* {comunidades.map((itemAtual) => {
+          return (
+            <li key={itemAtual.id}>
+              <a href={`/users/${itemAtual.title}`} key={itemAtual.title}>
+                <img src={itemAtual.image} alt="" />
+                <span>{itemAtual.title}</span>
+              </a>
+            </li>
+          );
+        })} */}
+      </ul>
+    </ProfileRelationsBoxWrapper>
+  )
+}
+
 export default function Home() {
   const githubUser = "brunojpng";
   const [comunidades, setComunidades] = useState([{
@@ -36,6 +58,13 @@ export default function Home() {
     'diego3g', 
     'maykbrito'
   ];
+  const [seguidores, setSeguidores] = useState([]);
+
+  useEffect(() => {
+    fetch('https://api.github.com/users/brunojpng/followers')
+      .then(response => response.json())
+      .then(data => setSeguidores(data))
+  }, []);
 
   return (
     <>
@@ -93,20 +122,8 @@ export default function Home() {
         </div>
 
         <div>
-          <ProfileRelationsBoxWrapper>
-            <ul>
-              {comunidades.map((itemAtual) => {
-                return (
-                  <li key={itemAtual.id}>
-                    <a href={`/users/${itemAtual.title}`} key={itemAtual.title}>
-                      <img src={itemAtual.image} alt="" />
-                      <span>{itemAtual.title}</span>
-                    </a>
-                  </li>
-                );
-              })}
-            </ul>
-          </ProfileRelationsBoxWrapper>
+          <ProfileRelationsBox title="Seguidores" items={seguidores} />
+          <ProfileRelationsBox title="Comunidades" items={comunidades} />
 
           <ProfileRelationsBoxWrapper>
             <h2 className="smallTitle">
